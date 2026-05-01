@@ -15,7 +15,7 @@ async function userCanAccessProject(db, userId, role, projectId) {
   return (project.memberIds || []).some((mid) => mid.toString() === userId);
 }
 
-router.post('/', async (req, res) => {
+router.post('/', auth.isAdmin, async (req, res) => {
   try {
     const { title, description, dueDate, projectId, assignedToId } = req.body || {};
     if (!title || !projectId) {
@@ -65,8 +65,12 @@ router.patch('/:id/status', async (req, res) => {
     const task = await db.collection('tasks').findOne({ _id: taskId });
     if (!task) return res.status(404).json({ error: 'Task not found' });
 
-    const allowed = await userCanAccessProject(db, req.user.id, req.user.role, task.projectId);
-    if (!allowed) return res.status(403).json({ error: 'Access denied' });
+    if (req.user.role !== 'ADMIN') {
+      const isAssigned = task.assignedToId && task.assignedToId.toString() === req.user.id;
+      if (!isAssigned) {
+        return res.status(403).json({ error: 'You can only update status on tasks assigned to you' });
+      }
+    }
 
     await db.collection('tasks').updateOne({ _id: taskId }, { $set: { status } });
     const updated = await db.collection('tasks').findOne({ _id: taskId });
@@ -105,13 +109,7 @@ router.get('/overdue', async (req, res) => {
     };
     let filter = baseFilter;
     if (req.user.role !== 'ADMIN') {
-      const userObjectId = new ObjectId(req.user.id);
-      const projects = await db.collection('projects')
-        .find({ memberIds: userObjectId })
-        .project({ _id: 1 })
-        .toArray();
-      const projectIds = projects.map((p) => p._id);
-      filter = { ...baseFilter, projectId: { $in: projectIds } };
+      filter = { ...baseFilter, assignedToId: new ObjectId(req.user.id) };
     }
     const tasks = await db.collection('tasks').find(filter).sort({ dueDate: 1 }).toArray();
     res.json(tasks);
@@ -127,13 +125,7 @@ router.get('/dashboard', async (req, res) => {
     const now = new Date();
     let scopeFilter = {};
     if (req.user.role !== 'ADMIN') {
-      const userObjectId = new ObjectId(req.user.id);
-      const projects = await db.collection('projects')
-        .find({ memberIds: userObjectId })
-        .project({ _id: 1 })
-        .toArray();
-      const projectIds = projects.map((p) => p._id);
-      scopeFilter = { projectId: { $in: projectIds } };
+      scopeFilter = { assignedToId: new ObjectId(req.user.id) };
     }
 
     const [total, todo, inProgress, done, overdue] = await Promise.all([

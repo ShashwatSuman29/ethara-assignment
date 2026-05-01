@@ -22,14 +22,18 @@
   const taskCancel = document.getElementById('task-cancel');
   const newTaskBtn = document.getElementById('new-task-btn');
 
-  newTaskBtn.addEventListener('click', () => {
-    taskError.textContent = '';
-    taskForm.reset();
-    taskModal.classList.remove('hidden');
-  });
+  if (user.role !== 'ADMIN') {
+    newTaskBtn.classList.add('hidden');
+  } else {
+    newTaskBtn.addEventListener('click', () => {
+      taskError.textContent = '';
+      taskForm.reset();
+      taskModal.classList.remove('hidden');
+    });
+    taskForm.addEventListener('submit', submitTask);
+  }
   taskCancel.addEventListener('click', () => taskModal.classList.add('hidden'));
   taskModal.addEventListener('click', (e) => { if (e.target === taskModal) taskModal.classList.add('hidden'); });
-  taskForm.addEventListener('submit', submitTask);
 
   let projectMembers = [];
 
@@ -107,7 +111,19 @@
       ? `<span class="task-card-due ${overdue ? 'overdue' : ''}">${overdue ? 'Overdue · ' : ''}${formatDate(task.dueDate)}</span>`
       : '<span class="task-card-due">No due date</span>';
 
-    const adminDelete = user.role === 'ADMIN'
+    const isAdmin = user.role === 'ADMIN';
+    const isAssignedToMe = task.assignedToId && task.assignedToId.toString() === user.id;
+    const canChangeStatus = isAdmin || isAssignedToMe;
+
+    const statusControl = canChangeStatus
+      ? `<select data-action="status">
+           <option value="TODO" ${task.status === 'TODO' ? 'selected' : ''}>TODO</option>
+           <option value="IN_PROGRESS" ${task.status === 'IN_PROGRESS' ? 'selected' : ''}>IN PROGRESS</option>
+           <option value="DONE" ${task.status === 'DONE' ? 'selected' : ''}>DONE</option>
+         </select>`
+      : `<span class="badge badge-${task.status}">${task.status.replace('_', ' ')}</span>`;
+
+    const adminDelete = isAdmin
       ? '<button class="btn-danger" data-action="delete">Delete</button>'
       : '';
 
@@ -118,28 +134,26 @@
       <div class="task-card-meta">
         ${due}
         <div class="task-card-actions">
-          <select data-action="status">
-            <option value="TODO" ${task.status === 'TODO' ? 'selected' : ''}>TODO</option>
-            <option value="IN_PROGRESS" ${task.status === 'IN_PROGRESS' ? 'selected' : ''}>IN PROGRESS</option>
-            <option value="DONE" ${task.status === 'DONE' ? 'selected' : ''}>DONE</option>
-          </select>
+          ${statusControl}
           ${adminDelete}
         </div>
       </div>
     `;
 
-    card.querySelector('select[data-action="status"]').addEventListener('change', async (e) => {
-      const status = e.target.value;
-      try {
-        await api(`/api/tasks/${task._id}/status`, {
-          method: 'PATCH',
-          body: JSON.stringify({ status })
-        });
-        await loadProject();
-      } catch (err) {
-        document.getElementById('project-error').textContent = err.message;
-      }
-    });
+    if (canChangeStatus) {
+      card.querySelector('select[data-action="status"]').addEventListener('change', async (e) => {
+        const status = e.target.value;
+        try {
+          await api(`/api/tasks/${task._id}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status })
+          });
+          await loadProject();
+        } catch (err) {
+          document.getElementById('project-error').textContent = err.message;
+        }
+      });
+    }
 
     const delBtn = card.querySelector('button[data-action="delete"]');
     if (delBtn) {
