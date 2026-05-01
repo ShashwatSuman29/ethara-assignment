@@ -2,6 +2,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const { getDb } = require('../db');
 const auth = require('../middleware/auth');
+const { logActivity } = require('../activity');
 
 const router = express.Router();
 
@@ -41,6 +42,13 @@ router.post('/', auth.isAdmin, async (req, res) => {
       createdAt: new Date()
     };
     const result = await db.collection('projects').insertOne(doc);
+    logActivity(db, {
+      userId: new ObjectId(req.user.id),
+      userName: req.user.name,
+      action: 'PROJECT_CREATED',
+      detail: `created project '${name}'`,
+      projectId: result.insertedId
+    });
     res.status(201).json({ ...doc, _id: result.insertedId });
   } catch (err) {
     console.error(err);
@@ -88,11 +96,16 @@ router.delete('/:id', auth.isAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Invalid project id' });
     }
     const db = getDb();
-    const result = await db.collection('projects').deleteOne({ _id: projectId });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Project not found' });
-    }
+    const project = await db.collection('projects').findOne({ _id: projectId });
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    await db.collection('projects').deleteOne({ _id: projectId });
     await db.collection('tasks').deleteMany({ projectId });
+    logActivity(db, {
+      userId: new ObjectId(req.user.id),
+      userName: req.user.name,
+      action: 'PROJECT_DELETED',
+      detail: `deleted project '${project.name}'`
+    });
     res.json({ ok: true });
   } catch (err) {
     console.error(err);

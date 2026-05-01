@@ -101,7 +101,8 @@
 
   function renderCard(task) {
     const card = document.createElement('div');
-    card.className = 'task-card';
+    const priority = task.priority || 'LOW';
+    card.className = `task-card priority-${priority}`;
     const overdue = isOverdue(task);
     const assignee = memberName(task.assignedToId);
     const desc = task.description
@@ -128,7 +129,10 @@
       : '';
 
     card.innerHTML = `
-      <div class="task-card-title">${escapeHtml(task.title)}</div>
+      <div class="task-card-header">
+        <div class="task-card-title">${escapeHtml(task.title)}</div>
+        <span class="badge badge-priority-${priority}">${priority}</span>
+      </div>
       ${desc}
       <div class="muted" style="margin-bottom:8px;">${escapeHtml(assignee)}</div>
       <div class="task-card-meta">
@@ -201,6 +205,7 @@
     const body = {
       title: fd.get('title'),
       description: fd.get('description') || '',
+      priority: fd.get('priority') || 'LOW',
       projectId
     };
     const due = fd.get('dueDate');

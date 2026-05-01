@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project — Task Manager</title>
+  <title>Project — ETHARA Task Manager</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/dashboard.html" class="nav-brand">Task Manager</a>
+      <a href="/dashboard.html" class="nav-brand">ETHARA Task Manager</a>
+      <div class="nav-links">
+        <a href="/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/team.html" class="nav-link">Team</a>
+      </div>
       <div class="nav-right">
         <span class="nav-user" id="nav-user"></span>
         <button class="btn-link" id="logout-btn">Log out</button>
@@ -56,6 +60,15 @@
         <label class="field">
           <span>Description</span>
           <textarea name="description" rows="3"></textarea>
+        </label>
+        <label class="field">
+          <span>Priority</span>
+          <select name="priority">
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="URGENT">Urgent</option>
+          </select>
         </label>
         <label class="field">
           <span>Due date</span>

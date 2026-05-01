@@ -3,13 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — Task Manager</title>
+  <title>Dashboard — ETHARA Task Manager</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/dashboard.html" class="nav-brand">Task Manager</a>
+      <a href="/dashboard.html" class="nav-brand">ETHARA Task Manager</a>
+      <div class="nav-links">
+        <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="/team.html" class="nav-link">Team</a>
+      </div>
       <div class="nav-right">
         <span class="nav-user" id="nav-user"></span>
         <button class="btn-link" id="logout-btn">Log out</button>
@@ -52,6 +56,14 @@
         <tbody id="overdue-tbody"></tbody>
       </table>
       <div id="overdue-empty" class="empty hidden">No overdue tasks.</div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Recent activity</h2>
+      <div class="activity-card">
+        <div id="activity-feed" class="activity-feed"></div>
+        <div id="activity-empty" class="activity-empty hidden">No activity yet.</div>
+      </div>
     </section>
   </main>
 

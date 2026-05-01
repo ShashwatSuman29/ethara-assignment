@@ -48,7 +48,7 @@ router.post('/signup', async (req, res) => {
     };
     const result = await db.collection('users').insertOne(doc);
     const user = { id: result.insertedId.toString(), name, email, role: userRole };
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({ token, user });
   } catch (err) {
     console.error(err);
@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
 
-    const payload = { id: user._id.toString(), role: user.role };
+    const payload = { id: user._id.toString(), role: user.role, name: user.name };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({
       token,

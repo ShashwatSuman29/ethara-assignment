@@ -184,7 +184,55 @@
     }
   }
 
+  const AVATAR_PALETTE = ['#92400E', '#065F46', '#7C2D12', '#6B21A8', '#9D174D', '#374151', '#B45309', '#0F766E'];
+  function avatarColor(name) {
+    let h = 0;
+    for (const c of name) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+    return AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+  }
+  function initials(name) {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  function timeAgo(date) {
+    const diff = Date.now() - new Date(date).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return new Date(date).toLocaleDateString();
+  }
+
+  async function loadActivity() {
+    const feed = document.getElementById('activity-feed');
+    const empty = document.getElementById('activity-empty');
+    try {
+      const activities = await api('/api/activity');
+      feed.innerHTML = '';
+      if (!activities.length) { empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+      activities.slice(0, 20).forEach((a) => {
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        const color = avatarColor(a.userName);
+        const ini = initials(a.userName);
+        item.innerHTML = `
+          <div class="avatar avatar-sm" style="background:${color}">${ini}</div>
+          <div class="activity-body">
+            <span class="activity-name">${escapeHtml(a.userName)}</span>
+            <span class="activity-detail"> ${escapeHtml(a.detail)}</span>
+          </div>
+          <div class="activity-time">${timeAgo(a.createdAt)}</div>
+        `;
+        feed.appendChild(item);
+      });
+    } catch (err) { /* silently skip */ }
+  }
+
   loadDashboardStats();
   loadProjects();
   loadOverdue();
+  loadActivity();
 })();

@@ -8,7 +8,7 @@ function auth(req, res, next) {
   }
   try {
     const payload = jwt.verify(parts[1], process.env.JWT_SECRET);
-    req.user = { id: payload.id, role: payload.role };
+    req.user = { id: payload.id, role: payload.role, name: payload.name || 'User' };
     next();
   } catch (e) {
     return res.status(401).json({ error: 'Invalid or expired token' });

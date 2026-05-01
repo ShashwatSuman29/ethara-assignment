@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team — ETHARA Task Manager</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/dashboard.html" class="nav-brand">ETHARA Task Manager</a>
+      <div class="nav-links">
+        <a href="/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/team.html" class="nav-link active">Team</a>
+      </div>
+      <div class="nav-right">
+        <span class="nav-user" id="nav-user"></span>
+        <button class="btn-link" id="logout-btn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="page-header">
+      <h1 class="page-title">Team Directory</h1>
+    </header>
+
+    <div id="team-error" class="form-error"></div>
+    <div id="team-grid" class="team-grid"></div>
+    <div id="team-empty" class="empty hidden">No team members found.</div>
+  </main>
+
+  <script src="/js/team.js"></script>
+</body>
+</html>
