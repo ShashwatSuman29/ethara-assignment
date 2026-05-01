@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Task Manager</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/dashboard.html" class="nav-brand">Task Manager</a>
+      <div class="nav-right">
+        <span class="nav-user" id="nav-user"></span>
+        <button class="btn-link" id="logout-btn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="page-header">
+      <h1 class="page-title">Dashboard</h1>
+      <button id="new-project-btn" class="btn-primary hidden">+ New project</button>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">To do</div><div class="stat-value" id="stat-todo">0</div></div>
+      <div class="stat-card"><div class="stat-label">In progress</div><div class="stat-value" id="stat-inprogress">0</div></div>
+      <div class="stat-card"><div class="stat-label">Done</div><div class="stat-value" id="stat-done">0</div></div>
+      <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-value stat-danger" id="stat-overdue">0</div></div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Projects</h2>
+      <div id="projects-error" class="form-error"></div>
+      <div id="projects-grid" class="projects-grid"></div>
+      <div id="projects-empty" class="empty hidden">No projects yet.</div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Overdue tasks</h2>
+      <div id="overdue-error" class="form-error"></div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Due date</th>
+          </tr>
+        </thead>
+        <tbody id="overdue-tbody"></tbody>
+      </table>
+      <div id="overdue-empty" class="empty hidden">No overdue tasks.</div>
+    </section>
+  </main>
+
+  <div id="project-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2 class="modal-title">New project</h2>
+      <form id="project-form">
+        <label class="field">
+          <span>Project name</span>
+          <input type="text" name="name" required />
+        </label>
+        <fieldset class="field">
+          <legend>Members</legend>
+          <div id="member-checkboxes" class="checkbox-list"></div>
+        </fieldset>
+        <div class="form-error" id="project-error"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="project-cancel">Cancel</button>
+          <button type="submit" class="btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

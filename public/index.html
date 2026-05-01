@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager — Sign in</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <h1 class="auth-title">Task Manager</h1>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="login" role="tab">Log in</button>
+      <button class="tab" data-tab="signup" role="tab">Sign up</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" required />
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" required />
+      </label>
+      <div class="form-error" id="login-error"></div>
+      <button type="submit" class="btn-primary">Log in</button>
+    </form>
+
+    <form id="signup-form" class="auth-form hidden">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="name" required />
+      </label>
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" required />
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" minlength="6" required />
+      </label>
+      <label class="field">
+        <span>Role</span>
+        <select name="role">
+          <option value="MEMBER">Member</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </label>
+      <div class="form-error" id="signup-error"></div>
+      <button type="submit" class="btn-primary">Create account</button>
+    </form>
+  </main>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

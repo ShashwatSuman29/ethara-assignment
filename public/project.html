@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project — Task Manager</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/dashboard.html" class="nav-brand">Task Manager</a>
+      <div class="nav-right">
+        <span class="nav-user" id="nav-user"></span>
+        <button class="btn-link" id="logout-btn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page">
+    <header class="page-header">
+      <div>
+        <a href="/dashboard.html" class="back-link">&larr; Dashboard</a>
+        <h1 class="page-title" id="project-name">Project</h1>
+        <div class="muted" id="project-members"></div>
+      </div>
+      <button id="new-task-btn" class="btn-primary">+ Add task</button>
+    </header>
+
+    <div id="project-error" class="form-error"></div>
+
+    <section class="kanban">
+      <div class="kanban-col" data-status="TODO">
+        <div class="kanban-header">To do <span class="kanban-count" id="count-TODO">0</span></div>
+        <div class="kanban-list" id="col-TODO"></div>
+      </div>
+      <div class="kanban-col" data-status="IN_PROGRESS">
+        <div class="kanban-header">In progress <span class="kanban-count" id="count-IN_PROGRESS">0</span></div>
+        <div class="kanban-list" id="col-IN_PROGRESS"></div>
+      </div>
+      <div class="kanban-col" data-status="DONE">
+        <div class="kanban-header">Done <span class="kanban-count" id="count-DONE">0</span></div>
+        <div class="kanban-list" id="col-DONE"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="task-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2 class="modal-title">New task</h2>
+      <form id="task-form">
+        <label class="field">
+          <span>Title</span>
+          <input type="text" name="title" required />
+        </label>
+        <label class="field">
+          <span>Description</span>
+          <textarea name="description" rows="3"></textarea>
+        </label>
+        <label class="field">
+          <span>Due date</span>
+          <input type="date" name="dueDate" />
+        </label>
+        <label class="field">
+          <span>Assign to</span>
+          <select name="assignedToId" id="assignee-select">
+            <option value="">— Unassigned —</option>
+          </select>
+        </label>
+        <div class="form-error" id="task-error"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="task-cancel">Cancel</button>
+          <button type="submit" class="btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/project.js"></script>
+</body>
+</html>
